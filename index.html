@@ -1,0 +1,971 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>뉴스타 인슈어런스 - 당신의 평생 금융 파트너</title>
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&family=Outfit:wght@400;600;800&display=swap" rel="stylesheet">
+    
+    <!-- Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['"Noto Sans KR"', 'sans-serif'],
+                        outfit: ['"Outfit"', 'sans-serif'],
+                    },
+                    colors: {
+                        primary: '#1E3A8A', // Deep Blue
+                        secondary: '#0EA5E9', // Sky Blue
+                        accent: '#F59E0B', // Amber for CTA
+                        darkSlate: '#0F172A',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Custom Animations and Styles */
+        .fade-in { animation: fadeIn 0.4s ease-in-out forwards; }
+        .slide-up { animation: slideUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+        .blob-anim { animation: blobFloat 12s infinite alternate ease-in-out; }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        @keyframes slideUp {
+            from { transform: translateY(30px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        @keyframes blobFloat {
+            0% { transform: translate(0px, 0px) scale(1); }
+            50% { transform: translate(30px, -50px) scale(1.1); }
+            100% { transform: translate(-20px, 20px) scale(0.9); }
+        }
+        
+        .step-hidden { display: none; }
+        
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #f8fafc; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 8px; }
+        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+        
+        /* Glassmorphism utility */
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 font-sans antialiased overflow-x-hidden">
+
+    <!-- Navigation Bar -->
+    <nav class="fixed w-full z-50 bg-white/80 backdrop-blur-lg border-b border-slate-200/60 shadow-sm transition-all duration-300">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-20 items-center">
+                <!-- Logo -->
+                <div class="flex-shrink-0 flex items-center cursor-pointer select-none" onclick="scrollToSection('home')">
+                    <i class="fa-solid fa-shield-halved text-primary text-3xl mr-2.5 transition-transform hover:scale-105"></i>
+                    <span class="font-outfit font-extrabold text-2xl tracking-tight text-slate-900">NEW STAR <span class="text-primary font-sans font-bold">인슈어런스</span></span>
+                </div>
+                
+                <!-- Desktop Menu -->
+                <div class="hidden md:flex space-x-8 items-center">
+                    <a href="#non-life" class="text-slate-600 hover:text-primary font-medium transition duration-200">손해보험</a>
+                    <a href="#life" class="text-slate-600 hover:text-primary font-medium transition duration-200">생명보험</a>
+                    <a href="#b2b" class="text-slate-600 hover:text-primary font-medium transition duration-200">단체/기업보험</a>
+                    <button onclick="openCRM()" class="flex items-center text-secondary hover:text-primary font-bold transition duration-200">
+                        <i class="fa-solid fa-laptop-code mr-1.5"></i> 영업 CRM 체험
+                    </button>
+                    <button onclick="scrollToSection('funnel')" class="bg-primary hover:bg-blue-800 text-white px-6 py-3 rounded-full font-semibold shadow-md hover:shadow-lg transition transform hover:-translate-y-0.5 active:translate-y-0 duration-200">
+                        무료 보장분석
+                    </button>
+                </div>
+
+                <!-- Mobile menu button -->
+                <div class="md:hidden flex items-center">
+                    <button id="mobile-menu-btn" class="text-slate-600 hover:text-primary focus:outline-none p-2 rounded-lg hover:bg-slate-100 transition">
+                        <i class="fa-solid fa-bars text-2xl"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <!-- Mobile Menu Panel -->
+        <div id="mobile-menu" class="hidden md:hidden bg-white border-t border-slate-100 absolute w-full shadow-xl">
+            <div class="px-4 pt-2 pb-6 space-y-2">
+                <a href="#non-life" onclick="scrollToSection('non-life')" class="block px-3 py-3.5 text-base font-medium text-slate-700 hover:bg-slate-50 rounded-xl transition">손해보험</a>
+                <a href="#life" onclick="scrollToSection('life')" class="block px-3 py-3.5 text-base font-medium text-slate-700 hover:bg-slate-50 rounded-xl transition">생명보험</a>
+                <a href="#b2b" onclick="scrollToSection('b2b')" class="block px-3 py-3.5 text-base font-medium text-slate-700 hover:bg-slate-50 rounded-xl transition">단체/기업보험</a>
+                <button onclick="openCRM(); document.getElementById('mobile-menu').classList.add('hidden');" class="w-full text-left px-3 py-3.5 text-base font-medium text-secondary hover:bg-slate-50 rounded-xl transition flex items-center">
+                    <i class="fa-solid fa-laptop-code mr-2"></i> 영업 CRM 체험
+                </button>
+                <button onclick="scrollToSection('funnel')" class="w-full mt-4 bg-primary text-white px-3 py-3.5 rounded-xl font-semibold text-center transition hover:bg-blue-800 shadow">무료 보장분석 신청</button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="home" class="relative pt-32 pb-24 lg:pt-44 lg:pb-36 overflow-hidden bg-gradient-to-br from-slate-50 via-blue-50/30 to-slate-100/50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+            <div class="text-center max-w-4xl mx-auto slide-up">
+                <span class="inline-flex items-center gap-1.5 py-1.5 px-4 rounded-full bg-blue-100 text-primary text-sm font-semibold mb-6 shadow-sm">
+                    <i class="fa-solid fa-sparkles text-xs"></i> 국내 30여 개 보험사 상품 실시간 완벽 비교
+                </span>
+                <h1 class="text-4xl md:text-5xl lg:text-6xl font-black text-slate-900 tracking-tight leading-[1.2] mb-6">
+                    내게 꼭 맞는 맞춤 보험,<br>
+                    <span class="text-transparent bg-clip-text bg-gradient-to-r from-primary via-blue-600 to-secondary">단 1분 만에</span> 확인하세요
+                </h1>
+                <p class="text-lg md:text-xl text-slate-600 mb-10 max-w-2xl mx-auto leading-relaxed font-light">
+                    불필요한 보장은 줄여 보험료를 절약하고, 부족한 위험 보장은 든든하게 채워드립니다. 빅데이터 기반 스마트 분석 시스템을 만나보세요.
+                </p>
+                <div class="flex flex-col sm:flex-row justify-center gap-4 max-w-md mx-auto sm:max-w-none">
+                    <button onclick="scrollToSection('funnel')" class="bg-primary hover:bg-blue-800 text-white px-8 py-4.5 rounded-2xl text-lg font-bold shadow-lg shadow-blue-900/10 hover:shadow-xl hover:shadow-blue-900/25 transition transform hover:-translate-y-0.5 active:translate-y-0 duration-200">
+                        1분 간편 보험료 계산 <i class="fa-solid fa-arrow-right ml-1.5 text-sm"></i>
+                    </button>
+                    <button onclick="scrollToSection('non-life')" class="bg-white hover:bg-slate-50 text-slate-700 border border-slate-200/80 px-8 py-4.5 rounded-2xl text-lg font-bold shadow-sm hover:shadow transition duration-200">
+                        보험 상품 둘러보기
+                    </button>
+                </div>
+            </div>
+        </div>
+        <!-- Decorative bg elements -->
+        <div class="absolute top-0 left-0 w-full h-full overflow-hidden -z-10 select-none pointer-events-none">
+            <div class="absolute -top-40 -right-40 w-[35rem] h-[35rem] bg-blue-200/40 rounded-full mix-blend-multiply filter blur-[80px] blob-anim opacity-60"></div>
+            <div class="absolute top-60 -left-40 w-[30rem] h-[30rem] bg-sky-200/40 rounded-full mix-blend-multiply filter blur-[80px] blob-anim opacity-60" style="animation-delay: 2s;"></div>
+        </div>
+    </section>
+
+    <!-- Funnel Section (Lead Generation) -->
+    <section id="funnel" class="py-20 bg-white">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="bg-white rounded-[2rem] shadow-2xl shadow-slate-200/80 border border-slate-100 overflow-hidden slide-up">
+                
+                <!-- Funnel Header -->
+                <div class="bg-gradient-to-r from-primary to-blue-700 px-8 py-7 text-white flex justify-between items-center">
+                    <div>
+                        <h2 class="text-2xl font-bold tracking-tight">스마트 맞춤 보험 매칭</h2>
+                        <p class="text-blue-100/90 mt-1 text-sm">간단한 3가지 질문에 답변하면 최적의 보험 플랜이 설계됩니다.</p>
+                    </div>
+                    <i class="fa-solid fa-magnifying-glass-chart text-4xl opacity-90 animate-pulse"></i>
+                </div>
+                
+                <div class="p-8 md:p-10">
+                    <!-- Progress Bar -->
+                    <div class="w-full bg-slate-100 rounded-full h-2.5 mb-10 overflow-hidden">
+                        <div id="funnel-progress" class="bg-gradient-to-r from-secondary to-blue-500 h-2.5 rounded-full transition-all duration-500" style="width: 33%"></div>
+                    </div>
+
+                    <!-- Step 1: Basic Info -->
+                    <div id="step-1" class="funnel-step fade-in">
+                        <h3 class="text-xl font-bold text-slate-800 mb-6 flex items-center"><span class="w-6 h-6 rounded-full bg-primary text-white text-xs flex items-center justify-center mr-2 font-mono">1</span> 성별과 연령대를 선택해 주세요.</h3>
+                        
+                        <div class="grid grid-cols-2 gap-4 mb-6">
+                            <button type="button" class="gender-btn group border-2 border-slate-200 rounded-2xl p-6 text-center hover:border-primary/60 hover:bg-slate-50 transition duration-200 focus:outline-none" onclick="selectGender(this, 'M')">
+                                <div class="w-16 h-16 bg-blue-50 rounded-full flex items-center justify-center mx-auto mb-3.5 group-hover:scale-105 transition-transform duration-200">
+                                    <i class="fa-solid fa-person text-4xl text-blue-500"></i>
+                                </div>
+                                <div class="font-bold text-slate-700 text-lg">남성</div>
+                            </button>
+                            <button type="button" class="gender-btn group border-2 border-slate-200 rounded-2xl p-6 text-center hover:border-primary/60 hover:bg-slate-50 transition duration-200 focus:outline-none" onclick="selectGender(this, 'F')">
+                                <div class="w-16 h-16 bg-rose-50 rounded-full flex items-center justify-center mx-auto mb-3.5 group-hover:scale-105 transition-transform duration-200">
+                                    <i class="fa-solid fa-person-dress text-4xl text-rose-500"></i>
+                                </div>
+                                <div class="font-bold text-slate-700 text-lg">여성</div>
+                            </button>
+                        </div>
+                        
+                        <select id="age-select" class="w-full border-2 border-slate-200 rounded-2xl p-4.5 text-slate-700 font-medium focus:border-primary focus:ring-0 outline-none transition bg-white appearance-none cursor-pointer" style="background-image: url('data:image/svg+xml;charset=utf-8,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 24 24%27 fill=%27none%27 stroke=%27%23475569%27 stroke-width=%272%27 stroke-linecap=%27round%27 stroke-linejoin=%27round%27%3E%3Cpolyline points=%276 9 12 15 18 9%27/%3E%3C/svg%3E'); background-position: right 1.25rem center; background-repeat: no-repeat; background-size: 1.25rem;">
+                            <option value="">연령대 선택</option>
+                            <option value="20대">20대</option>
+                            <option value="30대">30대</option>
+                            <option value="40대">40대</option>
+                            <option value="50대">50대</option>
+                            <option value="60대 이상">60대 이상</option>
+                        </select>
+                        
+                        <div class="mt-10 flex justify-end">
+                            <button onclick="nextStep(2)" class="bg-slate-800 hover:bg-slate-900 text-white px-8 py-3.5 rounded-xl font-bold transition flex items-center shadow">
+                                다음 단계 <i class="fa-solid fa-arrow-right ml-2 text-xs"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Step 2: Interests -->
+                    <div id="step-2" class="funnel-step step-hidden fade-in">
+                        <h3 class="text-xl font-bold text-slate-800 mb-2 flex items-center"><span class="w-6 h-6 rounded-full bg-primary text-white text-xs flex items-center justify-center mr-2 font-mono">2</span> 관심 있는 보험 상품을 선택해 주세요.</h3>
+                        <p class="text-slate-500 text-sm mb-6 ml-8">필요한 보장을 중복해서 선택하실 수 있습니다.</p>
+                        
+                        <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
+                            <label class="cursor-pointer group">
+                                <input type="checkbox" class="peer sr-only" value="건강/암">
+                                <div class="border-2 border-slate-200 rounded-2xl p-5 text-center peer-checked:border-secondary peer-checked:bg-sky-50/50 hover:bg-slate-50 transition duration-200 flex flex-col items-center">
+                                    <div class="w-12 h-12 rounded-xl bg-rose-50 flex items-center justify-center mb-3 group-hover:scale-105 transition-transform duration-200">
+                                        <i class="fa-solid fa-heart-pulse text-2xl text-rose-500"></i>
+                                    </div>
+                                    <div class="font-bold text-slate-700 text-sm">건강/암보험</div>
+                                </div>
+                            </label>
+                            
+                            <label class="cursor-pointer group">
+                                <input type="checkbox" class="peer sr-only" value="자동차/운전자">
+                                <div class="border-2 border-slate-200 rounded-2xl p-5 text-center peer-checked:border-secondary peer-checked:bg-sky-50/50 hover:bg-slate-50 transition duration-200 flex flex-col items-center">
+                                    <div class="w-12 h-12 rounded-xl bg-blue-50 flex items-center justify-center mb-3 group-hover:scale-105 transition-transform duration-200">
+                                        <i class="fa-solid fa-car text-2xl text-blue-500"></i>
+                                    </div>
+                                    <div class="font-bold text-slate-700 text-sm">자동차/운전자</div>
+                                </div>
+                            </label>
+                            
+                            <label class="cursor-pointer group">
+                                <input type="checkbox" class="peer sr-only" value="태아/어린이">
+                                <div class="border-2 border-slate-200 rounded-2xl p-5 text-center peer-checked:border-secondary peer-checked:bg-sky-50/50 hover:bg-slate-50 transition duration-200 flex flex-col items-center">
+                                    <div class="w-12 h-12 rounded-xl bg-amber-50 flex items-center justify-center mb-3 group-hover:scale-105 transition-transform duration-200">
+                                        <i class="fa-solid fa-baby text-2xl text-amber-500"></i>
+                                    </div>
+                                    <div class="font-bold text-slate-700 text-sm">태아/어린이</div>
+                                </div>
+                            </label>
+                            
+                            <label class="cursor-pointer group">
+                                <input type="checkbox" class="peer sr-only" value="종신/정기">
+                                <div class="border-2 border-slate-200 rounded-2xl p-5 text-center peer-checked:border-secondary peer-checked:bg-sky-50/50 hover:bg-slate-50 transition duration-200 flex flex-col items-center">
+                                    <div class="w-12 h-12 rounded-xl bg-indigo-50 flex items-center justify-center mb-3 group-hover:scale-105 transition-transform duration-200">
+                                        <i class="fa-solid fa-hands-holding-child text-2xl text-indigo-500"></i>
+                                    </div>
+                                    <div class="font-bold text-slate-700 text-sm">종신/정기(가족)</div>
+                                </div>
+                            </label>
+                            
+                            <label class="cursor-pointer group">
+                                <input type="checkbox" class="peer sr-only" value="펫보험">
+                                <div class="border-2 border-slate-200 rounded-2xl p-5 text-center peer-checked:border-secondary peer-checked:bg-sky-50/50 hover:bg-slate-50 transition duration-200 flex flex-col items-center">
+                                    <div class="w-12 h-12 rounded-xl bg-orange-50 flex items-center justify-center mb-3 group-hover:scale-105 transition-transform duration-200">
+                                        <i class="fa-solid fa-paw text-2xl text-orange-500"></i>
+                                    </div>
+                                    <div class="font-bold text-slate-700 text-sm">펫보험</div>
+                                </div>
+                            </label>
+                            
+                            <label class="cursor-pointer group">
+                                <input type="checkbox" class="peer sr-only" value="기타(보장분석)">
+                                <div class="border-2 border-slate-200 rounded-2xl p-5 text-center peer-checked:border-secondary peer-checked:bg-sky-50/50 hover:bg-slate-50 transition duration-200 flex flex-col items-center">
+                                    <div class="w-12 h-12 rounded-xl bg-teal-50 flex items-center justify-center mb-3 group-hover:scale-105 transition-transform duration-200">
+                                        <i class="fa-solid fa-file-invoice text-2xl text-teal-500"></i>
+                                    </div>
+                                    <div class="font-bold text-slate-700 text-sm">기존 보험 점검</div>
+                                </div>
+                            </label>
+                        </div>
+                        
+                        <div class="mt-10 flex justify-between items-center">
+                            <button onclick="prevStep(1)" class="text-slate-500 hover:text-slate-800 font-semibold flex items-center transition">
+                                <i class="fa-solid fa-arrow-left mr-2 text-xs"></i> 이전 단계
+                            </button>
+                            <button onclick="nextStep(3)" class="bg-slate-800 hover:bg-slate-900 text-white px-8 py-3.5 rounded-xl font-bold transition flex items-center shadow">
+                                다음 단계 <i class="fa-solid fa-arrow-right ml-2 text-xs"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Step 3: Contact Info -->
+                    <div id="step-3" class="funnel-step step-hidden fade-in">
+                        <h3 class="text-xl font-bold text-slate-800 mb-2 flex items-center"><span class="w-6 h-6 rounded-full bg-primary text-white text-xs flex items-center justify-center mr-2 font-mono">3</span> 결과를 안내받으실 연락처를 입력해 주세요.</h3>
+                        <p class="text-slate-500 text-sm mb-6 ml-8">맞춤형 컨설팅 리포트 준비가 완료되는 대로 실시간 연락을 드립니다.</p>
+                        
+                        <div class="space-y-4 max-w-lg mx-auto">
+                            <div>
+                                <label class="block text-sm font-semibold text-slate-700 mb-1.5">고객명</label>
+                                <input type="text" id="cust-name" placeholder="홍길동" class="w-full border-2 border-slate-200 rounded-xl p-4 focus:border-primary focus:ring-0 outline-none transition bg-slate-50 focus:bg-white">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-semibold text-slate-700 mb-1.5">연락처</label>
+                                <input type="tel" id="cust-phone" placeholder="010-0000-0000" class="w-full border-2 border-slate-200 rounded-xl p-4 focus:border-primary focus:ring-0 outline-none transition bg-slate-50 focus:bg-white">
+                            </div>
+                            <div class="flex items-start mt-5 p-3.5 bg-slate-50 border border-slate-100 rounded-xl">
+                                <input id="privacy" type="checkbox" class="h-5 w-5 mt-0.5 text-primary border-slate-300 rounded focus:ring-primary cursor-pointer">
+                                <label for="privacy" class="ml-3 block text-sm text-slate-600 leading-normal cursor-pointer select-none">
+                                    개인정보 수집 및 마케팅 활용에 동의합니다. (비교 분석 견적 제공 및 전문 설계사 상담 목적)
+                                </label>
+                            </div>
+                        </div>
+                        
+                        <div class="mt-10 flex justify-between items-center">
+                            <button onclick="prevStep(2)" class="text-slate-500 hover:text-slate-800 font-semibold flex items-center transition">
+                                <i class="fa-solid fa-arrow-left mr-2 text-xs"></i> 이전 단계
+                            </button>
+                            <button onclick="submitFunnel()" class="bg-accent hover:bg-yellow-600 text-white px-8 py-4 rounded-xl font-bold transition shadow-lg hover:shadow-yellow-600/25 flex items-center transform hover:-translate-y-0.5 active:translate-y-0">
+                                <i class="fa-solid fa-paper-plane mr-2 text-sm"></i> 무료 견적 신청하기
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Step 4: Success -->
+                    <div id="step-4" class="funnel-step step-hidden fade-in text-center py-8">
+                        <div class="w-24 h-24 bg-green-50 border border-green-100 rounded-full flex items-center justify-center mx-auto mb-6 shadow-sm">
+                            <i class="fa-solid fa-check text-5xl text-green-500"></i>
+                        </div>
+                        <h3 class="text-2xl font-black text-slate-800 mb-3">보험 분석 신청이 완료되었습니다!</h3>
+                        <p class="text-slate-600 mb-8 max-w-md mx-auto leading-relaxed">입력하신 소중한 정보가 분석 시스템에 접수되었습니다. 전담 매니저가 맞춤 가설계안을 지참하여 곧 연락드리겠습니다.</p>
+                        
+                        <div class="bg-blue-50 border border-blue-100/80 rounded-2xl p-5 inline-block text-left text-sm text-blue-800 max-w-lg shadow-sm">
+                            <div class="flex gap-2">
+                                <i class="fa-solid fa-circle-info text-base mt-0.5 shrink-0"></i>
+                                <div>
+                                    <strong>실시간 데모 연동 알림:</strong><br>
+                                    제출하신 상담 신청 데이터가 상단 메뉴의 <strong>[영업 CRM 체험]</strong> 대시보드 내 <span class="underline font-semibold">신규 DB 접수</span> 탭으로 실시간 전송되었습니다. 클릭하여 실제 매니저용 화면을 바로 확인해 보세요!
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mt-10">
+                            <button onclick="resetFunnel()" class="text-slate-400 hover:text-slate-700 font-semibold underline transition">처음으로 돌아가서 재시험하기</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Non-life Insurance Section -->
+    <section id="non-life" class="py-24 bg-slate-50/50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-20 slide-up">
+                <span class="text-primary font-extrabold tracking-wider text-xs bg-blue-50 px-3 py-1 rounded-full">NEW STAR NON-LIFE INSURANCE</span>
+                <h2 class="text-3xl md:text-4xl font-extrabold text-slate-900 mt-3.5 mb-5">손해보험 상품 <span class="text-slate-400 text-xl md:text-2xl font-normal block md:inline md:ml-2">일상의 예상치 못한 위험 완벽 보호</span></h2>
+                <p class="text-slate-600 max-w-2xl mx-auto">일상의 크고 작은 질병이나 부상, 사고부터 대물/배상책임 피해까지 맞춤형 포트폴리오를 제공합니다.</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Card 1 -->
+                <div class="bg-white rounded-3xl p-8 shadow-sm border border-slate-200/40 hover:shadow-2xl hover:shadow-slate-200/70 transition-all duration-300 group cursor-pointer" onclick="scrollToSection('funnel')">
+                    <div class="w-16 h-16 bg-rose-50 rounded-2xl flex items-center justify-center mb-7 group-hover:bg-rose-500 transition-all duration-300">
+                        <i class="fa-solid fa-heart-pulse text-3xl text-rose-500 group-hover:text-white transition-colors duration-300"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-slate-800 mb-3">종합건강 / 암보험</h3>
+                    <p class="text-slate-600 text-sm mb-6 leading-relaxed">암, 뇌혈관, 심장질환 등 3대 질병 진단비부터 각종 수술비와 입원 일당까지 빈틈없이 종합 보장합니다.</p>
+                    <span class="text-primary font-bold text-sm flex items-center group-hover:translate-x-1.5 transition-transform">자세히 설계 받기 <i class="fa-solid fa-chevron-right ml-1 text-xs"></i></span>
+                </div>
+                
+                <!-- Card 2 -->
+                <div class="bg-white rounded-3xl p-8 shadow-sm border border-slate-200/40 hover:shadow-2xl hover:shadow-slate-200/70 transition-all duration-300 group cursor-pointer" onclick="scrollToSection('funnel')">
+                    <div class="w-16 h-16 bg-blue-50 rounded-2xl flex items-center justify-center mb-7 group-hover:bg-blue-500 transition-all duration-300">
+                        <i class="fa-solid fa-car-burst text-3xl text-blue-500 group-hover:text-white transition-colors duration-300"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-slate-800 mb-3">자동차 / 운전자보험</h3>
+                    <p class="text-slate-600 text-sm mb-6 leading-relaxed">다이렉트 실시간 30개사 비교로 할인 혜택을 극대화하고, 형사 합의 및 법률비용 등 운전자 책임을 적극 보완합니다.</p>
+                    <span class="text-primary font-bold text-sm flex items-center group-hover:translate-x-1.5 transition-transform">자세히 설계 받기 <i class="fa-solid fa-chevron-right ml-1 text-xs"></i></span>
+                </div>
+
+                <!-- Card 3 -->
+                <div class="bg-white rounded-3xl p-8 shadow-sm border border-slate-200/40 hover:shadow-2xl hover:shadow-slate-200/70 transition-all duration-300 group cursor-pointer" onclick="scrollToSection('funnel')">
+                    <div class="w-16 h-16 bg-amber-50 rounded-2xl flex items-center justify-center mb-7 group-hover:bg-amber-500 transition-all duration-300">
+                        <i class="fa-solid fa-baby-carriage text-3xl text-amber-600 group-hover:text-white transition-colors duration-300"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-slate-800 mb-3">태아 / 어린이보험</h3>
+                    <p class="text-slate-600 text-sm mb-6 leading-relaxed">임신 직후부터 출생, 성장기 전반의 상해, 독감, 알레르기부터 각종 핵심 치료 항목을 빈틈없이 케어합니다.</p>
+                    <span class="text-primary font-bold text-sm flex items-center group-hover:translate-x-1.5 transition-transform">자세히 설계 받기 <i class="fa-solid fa-chevron-right ml-1 text-xs"></i></span>
+                </div>
+
+                <!-- Card 4 -->
+                <div class="bg-white rounded-3xl p-8 shadow-sm border border-slate-200/40 hover:shadow-2xl hover:shadow-slate-200/70 transition-all duration-300 group cursor-pointer" onclick="scrollToSection('funnel')">
+                    <div class="w-16 h-16 bg-orange-50 rounded-2xl flex items-center justify-center mb-7 group-hover:bg-orange-500 transition-all duration-300">
+                        <i class="fa-solid fa-house-chimney-crack text-3xl text-orange-600 group-hover:text-white transition-colors duration-300"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-slate-800 mb-3">주택화재 / 임대인보험</h3>
+                    <p class="text-slate-600 text-sm mb-6 leading-relaxed">아파트/단독주택 화재, 이웃집 누수 피해 배상책임 및 도난 등 나의 가장 소중한 실물 자산을 확실하게 보장합니다.</p>
+                    <span class="text-primary font-bold text-sm flex items-center group-hover:translate-x-1.5 transition-transform">자세히 설계 받기 <i class="fa-solid fa-chevron-right ml-1 text-xs"></i></span>
+                </div>
+
+                <!-- Card 5 -->
+                <div class="bg-white rounded-3xl p-8 shadow-sm border border-slate-200/40 hover:shadow-2xl hover:shadow-slate-200/70 transition-all duration-300 group cursor-pointer" onclick="scrollToSection('funnel')">
+                    <div class="w-16 h-16 bg-teal-50 rounded-2xl flex items-center justify-center mb-7 group-hover:bg-teal-500 transition-all duration-300">
+                        <i class="fa-solid fa-dog text-3xl text-teal-600 group-hover:text-white transition-colors duration-300"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-slate-800 mb-3">안심 펫보험</h3>
+                    <p class="text-slate-600 text-sm mb-6 leading-relaxed">사랑스러운 반려동물의 슬개골 탈구, 감기, 피부병 치료비부터 타인 동물 배상책임 등 고액의 병원비 부담을 대폭 해소합니다.</p>
+                    <span class="text-primary font-bold text-sm flex items-center group-hover:translate-x-1.5 transition-transform">자세히 설계 받기 <i class="fa-solid fa-chevron-right ml-1 text-xs"></i></span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Life Insurance Section -->
+    <section id="life" class="py-24 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-20 slide-up">
+                <span class="text-secondary font-extrabold tracking-wider text-xs bg-sky-50 px-3 py-1 rounded-full">NEW STAR LIFE INSURANCE</span>
+                <h2 class="text-3xl md:text-4xl font-extrabold text-slate-900 mt-3.5 mb-5">생명보험 상품 <span class="text-slate-400 text-xl md:text-2xl font-normal block md:inline md:ml-2">사랑하는 우리 가족과 먼 미래 준비</span></h2>
+                <p class="text-slate-600 max-w-2xl mx-auto">남겨진 가족을 위한 든든한 상속/생계 자금부터 행복하고 여유로운 노후 비과세 연금까지 장기적인 설계 방안을 수립합니다.</p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-10 max-w-5xl mx-auto">
+                <!-- Life Card 1 -->
+                <div class="flex flex-col sm:flex-row bg-slate-50/60 rounded-[2rem] overflow-hidden border border-slate-200/40 hover:shadow-xl transition-all duration-300">
+                    <div class="bg-gradient-to-br from-indigo-600 to-indigo-800 p-10 flex items-center justify-center sm:w-1/3 shrink-0">
+                        <i class="fa-solid fa-hands-holding text-6xl text-white/95"></i>
+                    </div>
+                    <div class="p-8 sm:p-10 flex flex-col justify-center">
+                        <h3 class="text-2xl font-bold text-slate-800 mb-3.5">종신 / 정기보험</h3>
+                        <p class="text-slate-600 text-sm mb-6 leading-relaxed">가장의 갑작스러운 공백 발생 시, 자녀 교육비나 대출 잔액 상환, 가족의 향후 안정된 생계를 위한 긴급 사망보장금을 설계합니다.</p>
+                        <button onclick="scrollToSection('funnel')" class="self-start text-indigo-600 font-extrabold hover:text-indigo-800 transition flex items-center">
+                            맞춤 가설계 요청 <i class="fa-solid fa-arrow-right ml-1.5 text-xs"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Life Card 2 -->
+                <div class="flex flex-col sm:flex-row bg-slate-50/60 rounded-[2rem] overflow-hidden border border-slate-200/40 hover:shadow-xl transition-all duration-300">
+                    <div class="bg-gradient-to-br from-emerald-500 to-emerald-700 p-10 flex items-center justify-center sm:w-1/3 shrink-0">
+                        <i class="fa-solid fa-piggy-bank text-6xl text-white/95"></i>
+                    </div>
+                    <div class="p-8 sm:p-10 flex flex-col justify-center">
+                        <h3 class="text-2xl font-bold text-slate-800 mb-3.5">은퇴 노후 / 저축연금</h3>
+                        <p class="text-slate-600 text-sm mb-6 leading-relaxed">국민연금만으로는 부족한 먼 은퇴 후 평생 생활자금. 복리 혜택과 비과세 세제 혜택을 접목하여 가장 효과적인 목돈을 적립합니다.</p>
+                        <button onclick="scrollToSection('funnel')" class="self-start text-emerald-600 font-extrabold hover:text-emerald-800 transition flex items-center">
+                            예상 수령액 확인 <i class="fa-solid fa-arrow-right ml-1.5 text-xs"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- B2B Group Insurance Section -->
+    <section id="b2b" class="py-28 bg-slate-900 relative overflow-hidden">
+        <!-- Abstract BG -->
+        <div class="absolute inset-0 opacity-5 pointer-events-none select-none">
+            <svg class="h-full w-full" xmlns="http://www.w3.org/2000/svg">
+                <defs><pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse"><path d="M0 40V0H40" fill="none" stroke="currentColor" stroke-width="1.5"></path></pattern></defs>
+                <rect width="100%" height="100%" fill="url(#grid)"></rect>
+            </svg>
+        </div>
+        
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+            <div class="flex flex-col lg:flex-row items-center gap-16">
+                <div class="lg:w-1/2 text-white">
+                    <span class="bg-slate-800 text-secondary border border-slate-700 px-4 py-1.5 rounded-full text-xs font-bold mb-5 inline-block">B2B CORPORATE LOUNGE</span>
+                    <h2 class="text-3xl md:text-4xl font-extrabold mb-7 leading-snug">기업의 재무 리스크 방지,<br>임직원의 핵심 복지 <span class="text-secondary">단체보험</span></h2>
+                    <p class="text-slate-300 text-base md:text-lg mb-8 leading-relaxed font-light">
+                        업무상 재해뿐만 아니라 일상 질병까지 보장하여 애사심을 고취하고, 산재 및 각종 대물/대인 배상책임으로 인한 기업의 예기치 못한 재무 리스크(Hedge)를 완벽 해소합니다. 인사담당자님을 위해 <strong>비교 견적 원스톱 컨설팅</strong>을 제안합니다.
+                    </p>
+                    <ul class="space-y-4 mb-8">
+                        <li class="flex items-center text-slate-200"><i class="fa-solid fa-circle-check text-secondary mr-3.5 text-lg"></i> 업종별 유해 위험도 및 소수~대규모 맞춤 커스텀 설계</li>
+                        <li class="flex items-center text-slate-200"><i class="fa-solid fa-circle-check text-secondary mr-3.5 text-lg"></i> 단체 가입부터 보상 청구 안내까지 1:1 VIP 전담팀 지정</li>
+                        <li class="flex items-center text-slate-200"><i class="fa-solid fa-circle-check text-secondary mr-3.5 text-lg"></i> 세제혜택 컨설팅, 임원 퇴직 연금 및 임원 배상 보완</li>
+                    </ul>
+                </div>
+                
+                <!-- B2B Lead Form -->
+                <div class="lg:w-1/2 w-full">
+                    <div class="bg-white rounded-[2rem] p-8 md:p-10 shadow-2xl">
+                        <h3 class="text-2xl font-black text-slate-800 mb-6 tracking-tight">단체보험 실시간 비교 견적 요청</h3>
+                        <form onsubmit="submitB2BForm(event)" class="space-y-5">
+                            <div>
+                                <label class="block text-sm font-semibold text-slate-600 mb-1.5">기업명 (상호)</label>
+                                <input type="text" required placeholder="(주)뉴스타코퍼레이션" class="w-full border border-slate-300/80 bg-slate-50/50 rounded-xl p-4 focus:border-secondary focus:ring-0 focus:bg-white outline-none transition">
+                            </div>
+                            <div class="grid grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-sm font-semibold text-slate-600 mb-1.5">담당자 성함</label>
+                                    <input type="text" required placeholder="이몽룡" class="w-full border border-slate-300/80 bg-slate-50/50 rounded-xl p-4 focus:border-secondary focus:bg-white outline-none transition">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-semibold text-slate-600 mb-1.5">직통 연락처</label>
+                                    <input type="tel" required placeholder="010-0000-0000" class="w-full border border-slate-300/80 bg-slate-50/50 rounded-xl p-4 focus:border-secondary focus:bg-white outline-none transition">
+                                </div>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-semibold text-slate-600 mb-1.5">피보험자 수 (임직원 규모)</label>
+                                <div class="relative">
+                                    <select class="w-full border border-slate-300/80 bg-slate-50/50 rounded-xl p-4 focus:border-secondary focus:bg-white outline-none transition appearance-none cursor-pointer" style="background-image: url('data:image/svg+xml;charset=utf-8,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 24 24%27 fill=%27none%27 stroke=%27%23475569%27 stroke-width=%272%27 stroke-linecap=%27round%27 stroke-linejoin=%27round%27%3E%3Cpolyline points=%276 9 12 15 18 9%27/%3E%3C/svg%3E'); background-position: right 1.25rem center; background-repeat: no-repeat; background-size: 1.25rem;">
+                                        <option>10인 미만</option>
+                                        <option>10인 ~ 50인</option>
+                                        <option>50인 ~ 100인</option>
+                                        <option>100인 이상</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <button type="submit" class="w-full bg-slate-900 hover:bg-slate-800 text-white font-bold py-4.5 rounded-xl transition duration-200 shadow-md transform hover:-translate-y-0.5 active:translate-y-0 mt-6">
+                                B2B 전문 부서에 비교 견적 신청하기
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- GA Sales CRM Modal Dashboard -->
+    <div id="crm-modal" class="fixed inset-0 z-[100] bg-slate-900/70 backdrop-blur-md hidden flex-col items-center justify-center p-4">
+        <div class="bg-slate-50 w-full max-w-6xl h-[90vh] rounded-3xl shadow-2xl flex flex-col overflow-hidden relative slide-up">
+            
+            <!-- CRM Header -->
+            <div class="bg-slate-900 text-white px-6 py-5 flex justify-between items-center shrink-0">
+                <div class="flex items-center">
+                    <i class="fa-solid fa-chart-line text-secondary text-2xl mr-3"></i>
+                    <h2 class="text-xl font-bold font-outfit">NEW STAR SMART SALES CRM</h2>
+                    <span class="ml-4 bg-red-500 text-white text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 rounded-full animate-pulse flex items-center gap-1">
+                        <span class="w-1.5 h-1.5 rounded-full bg-white"></span> Live
+                    </span>
+                </div>
+                <button onclick="closeCRM()" class="text-slate-400 hover:text-white transition duration-200 p-1.5 hover:bg-slate-800 rounded-lg">
+                    <i class="fa-solid fa-xmark text-2xl"></i>
+                </button>
+            </div>
+
+            <!-- CRM Content Layout -->
+            <div class="flex-1 flex overflow-hidden">
+                <!-- Sidebar -->
+                <div class="w-64 bg-white border-r border-slate-200/80 p-5 hidden md:flex flex-col">
+                    <div class="flex items-center mb-8 px-1">
+                        <div class="w-11 h-11 bg-primary rounded-full flex items-center justify-center text-white font-black mr-3 shadow-md shadow-blue-900/10">김</div>
+                        <div>
+                            <div class="font-bold text-slate-800 text-sm">김영업 수석매니저</div>
+                            <div class="text-xs text-slate-400 mt-0.5">손해보험 / 고액 특화</div>
+                        </div>
+                    </div>
+                    <nav class="space-y-1.5">
+                        <a href="#" class="flex items-center justify-between bg-blue-50 text-primary font-bold px-4 py-3.5 rounded-xl transition">
+                            <span><i class="fa-solid fa-inbox mr-2.5"></i>인바운드 리드</span>
+                            <span class="bg-primary text-white text-xs px-2 py-0.5 rounded-full font-bold font-mono" id="lead-count">2</span>
+                        </a>
+                        <a href="#" onclick="alertMsg('B2B 아웃바운드 영업 툴 및 타깃 분석 시스템을 로딩합니다.')" class="flex items-center text-slate-600 hover:bg-slate-50 font-medium px-4 py-3.5 rounded-xl transition">
+                            <span><i class="fa-solid fa-building mr-2.5"></i>B2B 아웃바운드</span>
+                        </a>
+                        <a href="#" onclick="alertMsg('청약서 발행 및 전자서명 전송 관리를 로딩합니다.')" class="flex items-center text-slate-600 hover:bg-slate-50 font-medium px-4 py-3.5 rounded-xl transition">
+                            <span><i class="fa-solid fa-calendar-check mr-2.5"></i>계약/청약 관리</span>
+                        </a>
+                        <a href="#" onclick="alertMsg('마이데이터 통합 스크래핑 관리를 로딩합니다.')" class="flex items-center text-slate-600 hover:bg-slate-50 font-medium px-4 py-3.5 rounded-xl transition">
+                            <span><i class="fa-solid fa-database mr-2.5"></i>통합 스크래핑</span>
+                        </a>
+                    </nav>
+                </div>
+
+                <!-- Main Area -->
+                <div class="flex-1 p-6 md:p-8 overflow-y-auto bg-slate-50">
+                    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-end gap-4 mb-8">
+                        <div>
+                            <h3 class="text-2xl font-extrabold text-slate-800">실시간 리드 라우팅 데스크</h3>
+                            <p class="text-slate-500 text-sm mt-1.5">고객이 홈페이지에서 보장분석/견적 신청 즉시, 담당자의 설계 분야에 따라 오토 라우팅됩니다.</p>
+                        </div>
+                        <div class="bg-white px-5 py-3 rounded-2xl border border-slate-200/60 shadow-sm shrink-0">
+                            <span class="text-xs text-slate-400 font-bold block">오늘의 평균 리드 전환율</span>
+                            <span class="font-extrabold text-primary text-xl font-mono">18.5%</span>
+                        </div>
+                    </div>
+
+                    <!-- Pipeline Board -->
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                        
+                        <!-- Column 1: New Leads -->
+                        <div class="bg-slate-100/70 rounded-2xl p-4 border border-slate-200/60 flex flex-col min-h-[400px]">
+                            <div class="flex justify-between items-center mb-4 pb-2 border-b border-slate-200/50">
+                                <h4 class="font-bold text-slate-700 text-sm flex items-center"><span class="w-2 h-2 rounded-full bg-rose-500 mr-2"></span> 신규 DB 접수 (New)</h4>
+                                <span class="bg-slate-200/80 text-slate-600 text-[10px] px-2 py-0.5 rounded-full font-bold font-mono" id="col-new-count">2</span>
+                            </div>
+                            <div class="space-y-4 flex-1 overflow-y-auto max-h-[50vh] pr-1" id="crm-new-leads">
+                                <!-- Dynamic cards will be appended here -->
+                            </div>
+                        </div>
+
+                        <!-- Column 2: Contacting -->
+                        <div class="bg-slate-100/70 rounded-2xl p-4 border border-slate-200/60 flex flex-col min-h-[400px]">
+                            <div class="flex justify-between items-center mb-4 pb-2 border-b border-slate-200/50">
+                                <h4 class="font-bold text-slate-700 text-sm flex items-center"><span class="w-2 h-2 rounded-full bg-secondary mr-2"></span> 상담/보장 분석중 (Working)</h4>
+                                <span class="bg-slate-200/80 text-slate-600 text-[10px] px-2 py-0.5 rounded-full font-bold font-mono">1</span>
+                            </div>
+                            <div class="space-y-4 flex-1 overflow-y-auto max-h-[50vh] pr-1">
+                                <!-- Dummy lead 3 working -->
+                                <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm border-l-4 border-l-indigo-500">
+                                    <div class="flex justify-between items-start mb-2">
+                                        <div class="font-bold text-slate-800">최*영 (여/50대)</div>
+                                        <span class="text-[10px] bg-sky-100 text-sky-700 px-1.5 py-0.5 rounded font-bold">가설계 완료</span>
+                                    </div>
+                                    <div class="text-xs text-slate-600 mb-1.5"><i class="fa-solid fa-tag mr-1 text-slate-400"></i> 종신/정기(가족)</div>
+                                    <div class="text-xs text-slate-500 mb-3"><i class="fa-solid fa-phone mr-1 text-slate-400"></i> 010-4455-****</div>
+                                    <div class="w-full bg-slate-100 rounded-full h-1.5 mb-2">
+                                        <div class="bg-gradient-to-r from-secondary to-blue-500 h-1.5 rounded-full" style="width: 70%"></div>
+                                    </div>
+                                    <div class="flex justify-between items-center mt-2.5">
+                                        <span class="text-[10px] text-slate-400">진행률 70%</span>
+                                        <button class="text-[10px] bg-slate-900 text-white px-2 py-1 rounded hover:bg-slate-800 transition" onclick="alertMsg('청약서를 모바일 전자 서명으로 고객에게 전송했습니다.')">청약 전송</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Column 3: Closed -->
+                        <div class="bg-slate-100/70 rounded-2xl p-4 border border-slate-200/60 flex flex-col min-h-[400px]">
+                            <div class="flex justify-between items-center mb-4 pb-2 border-b border-slate-200/50">
+                                <h4 class="font-bold text-slate-700 text-sm flex items-center"><span class="w-2 h-2 rounded-full bg-green-500 mr-2"></span> 가입 및 청약 완료 (Closed)</h4>
+                                <span class="bg-slate-200/80 text-slate-600 text-[10px] px-2 py-0.5 rounded-full font-bold font-mono">0</span>
+                            </div>
+                            <div class="flex flex-col items-center justify-center flex-1 text-slate-400 text-sm">
+                                <i class="fa-solid fa-file-signature text-4xl mb-3 opacity-30"></i>
+                                당일 체결 완료 건이 없습니다.
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Custom Stylized Dialog Message Box -->
+    <div id="custom-alert" class="fixed inset-0 z-[200] flex items-center justify-center bg-black/50 hidden opacity-0 transition-all duration-300">
+        <div class="bg-white rounded-2xl shadow-2xl p-6.5 max-w-sm w-full mx-4 transform scale-95 transition-all duration-300" id="custom-alert-box">
+            <div class="text-center">
+                <div class="w-14 h-14 bg-blue-50 border border-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <i class="fa-solid fa-circle-check text-3xl text-primary"></i>
+                </div>
+                <p id="custom-alert-text" class="text-slate-700 font-medium text-base mb-6 leading-relaxed"></p>
+                <button onclick="closeAlert()" class="bg-primary hover:bg-blue-800 text-white px-6 py-2.5 rounded-xl font-bold w-full transition shadow-md duration-200">
+                    확인
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-slate-900 text-slate-400 py-16 border-t border-slate-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 md:grid-cols-4 gap-12">
+            <div class="col-span-1 md:col-span-2">
+                <div class="flex items-center mb-5 select-none">
+                    <i class="fa-solid fa-shield-halved text-secondary text-2xl mr-2"></i>
+                    <span class="font-outfit font-extrabold text-xl text-white">NEW STAR <span class="font-sans font-bold text-sm text-slate-300">인슈어런스</span></span>
+                </div>
+                <p class="text-sm mb-6 leading-relaxed text-slate-400 font-light">
+                    당사는 30여 개 생명보험 및 손해보험 회사와 공식 정식 제휴를 맺고 있는 전문 대형 금융 GA(General Agency) 법인대리점입니다. 고객님의 상황에 가장 알맞은 합리적인 플랜을 비교 추천합니다.
+                </p>
+                <p class="text-xs text-slate-600 leading-relaxed">법인대리점 등록번호: 2026-NEWSTAR-09 | 대표자: 홍길동 | 본사: 서울시 영등포구 여의도금융로 12</p>
+            </div>
+            <div>
+                <h4 class="text-white font-bold mb-5 text-sm tracking-wide">비교 분석 서비스</h4>
+                <ul class="space-y-3.5 text-sm">
+                    <li><a href="#non-life" class="hover:text-white transition duration-200 font-light">손해보험 실시간 비교</a></li>
+                    <li><a href="#life" class="hover:text-white transition duration-200 font-light">생명보험 맞춤 추천</a></li>
+                    <li><a href="#b2b" class="hover:text-white transition duration-200 font-light">단체/기업 리스크 컨설팅</a></li>
+                    <li><a href="#funnel" class="hover:text-white transition duration-200 font-light">무료 스마트 보장분석</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4 class="text-white font-bold mb-5 text-sm tracking-wide">고객 통합 지원 센터</h4>
+                <p class="text-3xl font-black text-white mb-2 font-mono">1588-0000</p>
+                <p class="text-sm mb-4 font-light leading-relaxed">평일 09:00 ~ 18:00<br>(주말 및 법정 공휴일 휴무)</p>
+            </div>
+        </div>
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-16 pt-8 border-t border-slate-800/80 text-xs text-center text-slate-600">
+            &copy; 2026 New Star Insurance. All rights reserved. 본 웹사이트는 기획 제안용 프로토타입이며, 가상의 시뮬레이션 데이터로 구동됩니다.
+        </div>
+    </footer>
+
+    <!-- JavaScript Code -->
+    <script>
+        // Smooth scrolling
+        function scrollToSection(id) {
+            const el = document.getElementById(id);
+            if(el) {
+                const y = el.getBoundingClientRect().top + window.scrollY - 80; // offset for fixed navbar
+                window.scrollTo({top: y, behavior: 'smooth'});
+            }
+            // Close mobile menu if open
+            document.getElementById('mobile-menu').classList.add('hidden');
+        }
+
+        // Mobile Menu Toggle
+        document.getElementById('mobile-menu-btn').addEventListener('click', () => {
+            document.getElementById('mobile-menu').classList.toggle('hidden');
+        });
+
+        // Funnel Logic (Lead Generation)
+        let currentStep = 1;
+        let funnelData = { gender: '', age: '', interests: [], name: '', phone: '' };
+
+        function selectGender(btn, gender) {
+            // Remove active classes
+            document.querySelectorAll('.gender-btn').forEach(b => {
+                b.classList.remove('border-primary', 'bg-blue-50/50');
+                b.classList.add('border-slate-200');
+            });
+            // Add active class to selected
+            btn.classList.remove('border-slate-200');
+            btn.classList.add('border-primary', 'bg-blue-50/50');
+            funnelData.gender = gender;
+        }
+
+        function updateProgress(step) {
+            const bar = document.getElementById('funnel-progress');
+            if(step === 1) bar.style.width = '33%';
+            if(step === 2) bar.style.width = '66%';
+            if(step === 3) bar.style.width = '90%';
+            if(step === 4) bar.style.width = '100%';
+        }
+
+        function nextStep(step) {
+            // Validation
+            if (currentStep === 1) {
+                const age = document.getElementById('age-select').value;
+                if(!funnelData.gender) { alertMsg("성별을 선택해 주세요."); return; }
+                if(!age) { alertMsg("연령대를 선택해 주세요."); return; }
+                funnelData.age = age;
+            }
+            if (currentStep === 2) {
+                const checkboxes = document.querySelectorAll('input[type="checkbox"]:checked');
+                let interests = [];
+                checkboxes.forEach(cb => interests.push(cb.value));
+                if(interests.length === 0) { alertMsg("관심 있는 보험 분야를 하나 이상 선택해 주세요."); return; }
+                funnelData.interests = interests;
+            }
+
+            document.getElementById(`step-${currentStep}`).classList.add('step-hidden');
+            document.getElementById(`step-${step}`).classList.remove('step-hidden');
+            currentStep = step;
+            updateProgress(step);
+        }
+
+        function prevStep(step) {
+            document.getElementById(`step-${currentStep}`).classList.add('step-hidden');
+            document.getElementById(`step-${step}`).classList.remove('step-hidden');
+            currentStep = step;
+            updateProgress(step);
+        }
+
+        function formatPhone(phone) {
+            return phone.replace(/[^0-9]/g, '')
+                        .replace(/^(\d{2,3})(\d{3,4})(\d{4})$/, '$1-$2-$3');
+        }
+
+        // Add auto-hyphenation to phone input
+        document.getElementById('cust-phone').addEventListener('input', function(e) {
+            e.target.value = formatPhone(e.target.value);
+        });
+
+        // Leads list stored in memory for CRM simulation
+        let leads = [
+            { id: 1, name: '이*진', gender: 'F', age: '30대', interests: ['건강/암'], date: '10분 전', type: '개인', phone: '010-3344-****' },
+            { id: 2, name: '박*민', gender: 'M', age: '40대', interests: ['자동차/운전자'], date: '1시간 전', type: '개인', phone: '010-8899-****' }
+        ];
+
+        function renderLeads() {
+            const listEl = document.getElementById('crm-new-leads');
+            if (!listEl) return;
+            listEl.innerHTML = '';
+            
+            leads.forEach(lead => {
+                const tagColor = getTagColor(lead.interests[0] || '기타');
+                const genderText = lead.gender === 'M' ? '남' : '여';
+                
+                const card = document.createElement('div');
+                card.className = `bg-white p-4 rounded-xl border border-slate-200 shadow-sm border-l-4 ${tagColor} transition hover:shadow-md slide-up`;
+                card.innerHTML = `
+                    <div class="flex justify-between items-start mb-2">
+                        <div class="font-bold text-slate-800">${lead.name} (${genderText}/${lead.age})</div>
+                        <span class="text-xs text-slate-400">${lead.date}</span>
+                    </div>
+                    <div class="text-xs text-slate-600 mb-1"><i class="fa-solid fa-tag mr-1 text-slate-400"></i> ${lead.interests.join(', ')}</div>
+                    <div class="text-xs text-slate-500 mb-3"><i class="fa-solid fa-phone mr-1 text-slate-400"></i> ${lead.phone}</div>
+                    <div class="flex justify-between items-center gap-1.5">
+                        <button class="text-[10px] bg-slate-100 hover:bg-slate-200 text-slate-700 px-2 py-1.5 rounded-lg transition" onclick="scrapeMyData('${lead.name}')">스크래핑 조회</button>
+                        <button class="text-[10px] bg-primary hover:bg-blue-800 text-white px-2 py-1.5 rounded-lg transition" onclick="connectCall('${lead.name}')">콜 연결</button>
+                    </div>
+                `;
+                listEl.appendChild(card);
+            });
+
+            // Update badge counts
+            document.getElementById('lead-count').innerText = leads.length;
+            document.getElementById('col-new-count').innerText = leads.length;
+        }
+
+        function getTagColor(interest) {
+            if (interest.includes('건강/암')) return 'border-l-rose-500';
+            if (interest.includes('자동차/운전자')) return 'border-l-blue-500';
+            if (interest.includes('태아/어린이')) return 'border-l-amber-500';
+            if (interest.includes('종신/정기')) return 'border-l-indigo-500';
+            if (interest.includes('펫보험')) return 'border-l-orange-500';
+            if (interest.includes('단체') || interest.includes('B2B')) return 'border-l-teal-500';
+            return 'border-l-slate-500';
+        }
+
+        function submitFunnel() {
+            const nameInput = document.getElementById('cust-name').value.trim();
+            const phoneInput = document.getElementById('cust-phone').value.trim();
+            const privacy = document.getElementById('privacy').checked;
+
+            if(!nameInput || !phoneInput) { alertMsg("이름과 연락처를 모두 입력해 주세요."); return; }
+            if(!privacy) { alertMsg("개인정보 수집 이용에 동의해 주세요."); return; }
+
+            // Mask name for privacy in CRM (e.g. 홍길동 -> 홍*동)
+            let maskedName = nameInput;
+            if (nameInput.length > 2) {
+                maskedName = nameInput[0] + '*' + nameInput.slice(2);
+            } else if (nameInput.length === 2) {
+                maskedName = nameInput[0] + '*';
+            }
+
+            // Mask phone (e.g. 010-1234-5678 -> 010-1234-****)
+            let maskedPhone = phoneInput;
+            const parts = phoneInput.split('-');
+            if (parts.length === 3) {
+                maskedPhone = `${parts[0]}-${parts[1]}-****`;
+            }
+
+            // Add the new lead to memory list
+            const newLead = {
+                id: Date.now(),
+                name: maskedName,
+                gender: funnelData.gender,
+                age: funnelData.age,
+                interests: funnelData.interests,
+                date: '방금 전',
+                type: '개인',
+                phone: maskedPhone
+            };
+
+            leads.unshift(newLead);
+            renderLeads();
+
+            // Clear inputs
+            document.getElementById('cust-name').value = '';
+            document.getElementById('cust-phone').value = '';
+            document.getElementById('privacy').checked = false;
+
+            // Move to Step 4 (Success)
+            nextStep(4);
+        }
+
+        function resetFunnel() {
+            currentStep = 1;
+            funnelData = { gender: '', age: '', interests: [], name: '', phone: '' };
+            
+            // Reset gender buttons UI
+            document.querySelectorAll('.gender-btn').forEach(b => {
+                b.classList.remove('border-primary', 'bg-blue-50/50');
+                b.classList.add('border-slate-200');
+            });
+            // Reset age select
+            document.getElementById('age-select').value = '';
+            // Reset checkboxes
+            document.querySelectorAll('input[type="checkbox"]').forEach(cb => {
+                cb.checked = false;
+            });
+
+            // Show step 1
+            for (let i = 1; i <= 4; i++) {
+                const el = document.getElementById(`step-${i}`);
+                if (i === 1) el.classList.remove('step-hidden');
+                else el.classList.add('step-hidden');
+            }
+            updateProgress(1);
+        }
+
+        function submitB2BForm(event) {
+            event.preventDefault();
+            const form = event.target;
+            const inputs = form.querySelectorAll('input, select');
+            const companyName = inputs[0].value.trim();
+            const contactName = inputs[1].value.trim();
+            const phone = formatPhone(inputs[2].value.trim());
+            const employees = inputs[3].value;
+
+            // Mask B2B lead info
+            let maskedContact = contactName;
+            if (contactName.length > 2) {
+                maskedContact = contactName[0] + '*' + contactName.slice(2);
+            } else if (contactName.length === 2) {
+                maskedContact = contactName[0] + '*';
+            }
+
+            let maskedPhone = phone;
+            const parts = phone.split('-');
+            if (parts.length === 3) {
+                maskedPhone = `${parts[0]}-${parts[1]}-****`;
+            }
+
+            // Create B2B Lead card in CRM list
+            const newLead = {
+                id: Date.now(),
+                name: `${companyName} (${maskedContact})`,
+                gender: 'M', 
+                age: employees,
+                interests: [`단체보험 (${employees})`],
+                date: '방금 전',
+                type: '기업',
+                phone: maskedPhone
+            };
+
+            leads.unshift(newLead);
+            renderLeads();
+
+            // Clear B2B form
+            form.reset();
+
+            // Show custom alert
+            alertMsg(`<strong>[뉴스타 인슈어런스 B2B]</strong><br><br>${companyName} 단체보험 비교 견적 요청이 접수되었습니다! B2B 전문 전담팀에서 검토 후 신속히 연락드리겠습니다.`);
+        }
+
+        // Custom modal alerts
+        function alertMsg(msg) {
+            const modal = document.getElementById('custom-alert');
+            const text = document.getElementById('custom-alert-text');
+            text.innerHTML = msg;
+            modal.classList.remove('hidden');
+            setTimeout(() => {
+                modal.classList.remove('opacity-0');
+                document.getElementById('custom-alert-box').classList.remove('scale-95');
+                document.getElementById('custom-alert-box').classList.add('scale-100');
+            }, 10);
+        }
+
+        function closeAlert() {
+            const modal = document.getElementById('custom-alert');
+            modal.classList.add('opacity-0');
+            document.getElementById('custom-alert-box').classList.remove('scale-100');
+            document.getElementById('custom-alert-box').classList.add('scale-95');
+            setTimeout(() => {
+                modal.classList.add('hidden');
+            }, 200);
+        }
+
+        // CRM Modals
+        function openCRM() {
+            const modal = document.getElementById('crm-modal');
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+            renderLeads();
+        }
+
+        function closeCRM() {
+            const modal = document.getElementById('crm-modal');
+            modal.classList.remove('flex');
+            modal.classList.add('hidden');
+        }
+
+        // Action simulations in CRM
+        function scrapeMyData(leadName) {
+            alertMsg(`<strong>[마이데이터 스크래핑]</strong><br><br><strong>${leadName}</strong> 고객님의 32개 생명/손해보험 가입현황 및 실시간 해약환급금 정보를 통합 스크래핑하였습니다. 가설계 매칭 모델을 가동합니다.`);
+        }
+
+        function connectCall(leadName) {
+            alertMsg(`<strong>[CTI 콜센터 자동 연동]</strong><br><br><strong>${leadName}</strong> 고객님에게 가상 안전번호 통화를 시도합니다.<br><span class="text-xs text-slate-400 mt-2 block">(헤드셋 및 다이얼러 상태를 점검해 주세요.)</span>`);
+        }
+
+        // Render dummy leads initially
+        window.onload = function() {
+            renderLeads();
+        };
+    </script>
+</body>
+</html>
